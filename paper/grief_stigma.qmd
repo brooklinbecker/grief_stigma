@@ -1,0 +1,208 @@
+---
+title: "On Grief"
+author: 
+  - Brooklin Becker
+thanks: "Code and data are available at: https://github.com/brooklinbecker/experiences_of_grief.git"
+date: today
+date-format: long
+abstract: "Abstract to be added once Data, Results, and Discussion sections are fully completed."
+format: pdf
+toc: true
+number-sections: true
+bibliography: references.bib
+---
+
+\newpage
+
+```{r}
+#| echo: false
+#| include: false
+#| warning: false
+#| message: false
+
+library(tidyverse)
+library(knitr)
+library(kableExtra)
+library(ggplot2)
+library(dplyr)
+library(janitor)
+library(readxl)
+library(readr)
+library(openxlsx)
+```
+
+
+# Introduction {#sec-intro}
+
+Introduction still to come. 
+
+# Data {#sec-data}
+
+Data used in this paper was retrieved from `Zenodo` [@zenodocite], which is an open repository maintained for researchers to publish research papers, datasets, and other scholarly work. The data source used is named `Public stigma towards prolonged grief disorder` [@pgdcite] which was retrieved to analyze the effects of Prolonged Grief Disorder (PGD) on the surveyed grieving participants. The data was collected, cleaned and analyzed in the programming 
+language `R` [@citeR]. Supplementary libraries that were utilized during the analysis 
+and compilation of the dataset include `tidyverse` [@tidyversecite], `knitr` [@knitrcite], 
+`janitor` [@janitorcite], `dbplyr` [@dbplyrcite], and `ggplot2` [@ggplotcite].
+
+## Public Perception of Individuals Experiencing Grief, By Sex {#sec-data2}
+
+In Table \ref{tab:tab1}, we have compiled the summary statistics for participants' perception on grieving individuals. Note that for the remainder of this paper, prolonged grief disorder and major depressive episode are denoted by PGD and MDE, respectively. The four categories identified in this summary include the following combinations each for one male and one female individual: those exhibiting symptoms of prolonged grief and diagnosed with PGD, those exhibiting symptoms of prolonged grief and diagnosed with MDE, those exhibiting symptoms of prolonged grief and receiving no diagnosis, and those exhibiting no symptoms of prolonged grief and thus receiving no diagnosis.
+
+For the 11 variables described in each of the four categories, the first two variables describe the number of participants and average age of the participants. The third variable describes the level of complicated grief experienced by the participants. The last eight variables listed denote the average ratings of the participants towards the grieving individuals for each respective variable, in which a higher average implies a stronger relationship to that variable.
+
+```{r}
+#| echo: false
+#| include: false
+
+#Reading the data file from the source website
+raw_grief_data <-
+  read.xlsx("https://zenodo.org/records/3957822/files/Data.xlsx?download=1", sheet = 1)
+
+#Writing the data file into a new xlsx file
+write.xlsx(
+  x = raw_grief_data,
+  file = "new_grief_data.xlsx"
+)
+
+```
+
+```{r}
+#| include: false
+
+#Creating new dataframe for cleaning
+cleaned_grief_data <- raw_grief_data
+
+```
+
+```{r}
+#| include: false
+
+selected_variables <- c("patricipants_number", "age_mean", "icg_mean", "competent_mean", "warm_mean", "dependent_mean", "emotionally_stable_mean", "fear_mean", "anger_mean", "prosocial_mean", "social_distance_mean")
+
+cleaned_grief_data <- cleaned_grief_data[cleaned_grief_data$variable %in% selected_variables, ]
+
+```
+
+```{r}
+#| include: false
+
+#New variable names
+new_var_names <- c("Participants", "Mean Age", "Complicated Grief Rating", "Competency", 
+                   "Warmness", "Dependency", "Emotional Stability", "Fear", "Anger", 
+                   "Prosociality", "Social Aversion")
+
+old_var_names <- selected_variables
+
+```
+
+```{r}
+#| include: false
+
+# Change the name of the variables in the dataframe
+cleaned_grief_data <- cleaned_grief_data %>%
+  mutate(variable = ifelse(variable %in% old_var_names, new_var_names, variable))
+
+```
+
+```{r}
+#| include: false
+
+#Renaming the columns to shorten column names
+cleaned_grief_data <-
+  cleaned_grief_data |>
+  rename(
+    Variable = variable,
+    "A1" = s_pgd_d_pgd_m,
+    "A2" = s_pgd_d_pgd_f,
+    "B1" = s_pgd_d_mde_m,
+    "B2" = s_pgd_d_mde_f,
+    "C1" = s_pgd_d_000_m,
+    "C2" = s_pgd_d_000_f,
+    "D1" = s_000_d_000_m,
+    "D2" = s_000_d_000_f
+  )
+
+```
+
+```{r}
+#| include: false
+
+# Identifying the numeric columns
+numeric_cols <- sapply(cleaned_grief_data, is.numeric)
+
+# Applying formatting to the numeric columns to round to 2 decimal points
+cleaned_grief_data[, numeric_cols] <- lapply(cleaned_grief_data[, numeric_cols], 
+                                             function(x) format(round(x, 2), nsmall = 2))
+
+```
+
+```{r tab1}
+#| include: true
+#| echo: false
+
+kable(cleaned_grief_data, caption = "Public Perception Towards Grief Based on Varying Symptoms and Diagnoses, By Sex", row.names = FALSE, booktabs = TRUE) %>%
+  kable_styling(latex_options = "HOLD_position")
+
+```
+
+Below will be a legend denoting the combinations of grief symptoms and diagnoses, as abbreviated by the column names above.
+
+## Public Perception of Individuals Experiencing Grief, Aggregated {#sec-data3}
+
+In Table \ref{tab:tab2}, we have compiled the summary statistics for participants' perception on grieving individuals, aggregated for each of the four categories by averaging both the male and female numbers in each row.
+
+```{r}
+#| include: false
+
+aggregate_grief_data <- cleaned_grief_data
+
+```
+
+```{r}
+#| include: false
+
+# Convert columns to numeric if needed
+aggregate_grief_data[, 2:9] <- lapply(aggregate_grief_data[, 2:9], as.numeric)
+
+# Calculating the row-wise means for each category's pair of columns
+aggregate_grief_data$A <- round(rowMeans(aggregate_grief_data[, c(2, 3)]), 2)
+aggregate_grief_data$B <- round(rowMeans(aggregate_grief_data[, c(4, 5)]), 2)
+aggregate_grief_data$C <- round(rowMeans(aggregate_grief_data[, c(6, 7)]), 2)
+aggregate_grief_data$D <- round(rowMeans(aggregate_grief_data[, c(8, 9)]), 2)
+
+# Removing the original columns
+aggregate_grief_data <- aggregate_grief_data[, -c(2:9)]
+
+```
+
+```{r tab2}
+#| include: true
+#| echo: false
+
+# Display the table using kable
+kable(aggregate_grief_data, caption = "Public Perception Towards Grief Based on Varying Symptoms and Diagnoses, Aggregated", row.names = FALSE, booktabs = TRUE) %>%
+  kable_styling(latex_options = "HOLD_position")
+
+```
+
+Similar to @sec-data2, below will be a legend denoting the combinations of grief symptoms and diagnoses with both sexes aggregated into one column, as abbreviated by the column names above.
+
+# Results {#sec-results}
+
+The intention in this section is to compare the perception of survey participants towards individuals representing the 4 different combinations of grief symptoms and diagnoses, for each of the two sexes.
+
+# Discussion {#sec-discussion}
+
+## First discussion point {#sec-discussion1}
+
+A different dataset involving qualitative responses of grieving individuals will be discussed and compared to our findings in @sec-results.
+
+## Second discussion point {#sec-discussion2}
+
+## Weaknesses and next steps {#sec-discussion3}
+
+
+\newpage
+
+# References {.unnumbered}
+
+
