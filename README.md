@@ -1,4 +1,4 @@
-# On Grief and Grief Experiences
+# Influence of Public Stigma on the Grieving Experiences Among Bereaved Women
 
 ## Abstract
 
