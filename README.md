@@ -1,8 +1,8 @@
-# On Grief and Grief Experiences
+# Influence of Public Stigma on the Grieving Experiences Among Bereaved Women
 
-## Overview
+## Abstract
 
-This paper is an analysis using two datasets - the main dataset being a quantitative study analyzing public stigma on individuals experiencing prolonged grief, and the secondary dataset being a qualitative study compiling responses of individuals experiencing any kind of grief.
+The quantitative data set from the original research paper *Public stigma towards grief: Does diagnostic labeling matter?*, gathered from Zenodo's open repository, was analyzed to determine whether there are gender biases evident in public stigma towards bereaved individuals with prolonged grief--particularly women. The analysis indicates that certain negative emotions exhibited by the survey participants, such as fear and anger, are more often magnified towards the bereaved women compared to the bereaved men described in the study. As perceived levels of complicated grief are found to be materially higher for women, these negative emotions further compound the intensity of grief that women already experience. When coupling these results with the written text responses received by bereaved women in the qualitative data set from a different research paper, *Experiences of Grief: A Phenomenological Survey, 2020*, the compounding effect of prolonged grief for bereaved women sparks a need for mass education regarding the debilitating struggles women experience from intensified grief.
 
 ## File Structure
 
