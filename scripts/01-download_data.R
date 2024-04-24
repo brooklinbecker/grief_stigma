@@ -1,26 +1,43 @@
 #### Preamble ####
-# Purpose: Downloads and saves the data from [...UPDATE THIS...]
-# Author: Brooklin Becker 
-# Date: 3 April 2024 [...UPDATE THIS...]
-# Contact: brooklin.becker@mail.utoronto.ca 
+# Purpose: Downloads and saves the data for the two analyzed files from Zenodo and UK Data Service
+# Author: Brooklin Becker
+# Date: 24 April 2024
+# Contact: brooklin.becker@mail.utoronto.ca
 # License: MIT
-# Pre-requisites: [...UPDATE THIS...]
-# Any other information needed? [...UPDATE THIS...]
 
 
 #### Workspace setup ####
 library(tidyverse)
 library(openxlsx)
 
-#### Download data ####
+#### Download primary data ####
+
+#Reading the primary quantitative data file from the source website
 raw_grief_data <-
   read.xlsx("https://zenodo.org/records/3957822/files/Data.xlsx?download=1", sheet = 1)
 
 
+#### Save primary data ####
 
-#### Save data ####
-# [...UPDATE THIS...]
-# change the_raw_data to whatever name you assigned when you downloaded it.
-write_csv(raw_grief_data, "data/raw_data/raw_data.csv") 
+#Writing the primary quantitative data file into a new xlsx file
+write.xlsx(
+  x = raw_grief_data,
+  file = "new_quant_grief_data.xlsx"
+)
 
+
+#### Download secondary data ####
+
+#Reading the data file from the source website
+raw_grief_data2 <-
+  read.xlsx("https://reshare.ukdataservice.ac.uk/856067/2/ExperiencesOfGrief_APhenomenologicalSurvey.xlsx", sheet = 2)
+
+
+#### Save secondary data ####
+
+#Writing the data file into a new xlsx file
+write.xlsx(
+  x = raw_grief_data2,
+  file = "new_grief_data2.xlsx"
+)
 

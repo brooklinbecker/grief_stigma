@@ -5,7 +5,7 @@ author:
 thanks: "Code and data are available at: https://github.com/brooklinbecker/experiences_of_grief.git"
 date: today
 date-format: long
-abstract: "The quantitative data set from the original research paper *Public stigma towards grief: Does diagnostic labeling matter?*, gathered from Zenodo's open repository, was analyzed to determine whether there are gender biases evident in public stigma towards bereaved individuals with prolonged grief - particularly women. The analysis indicates that certain negative emotions exhibited by the survey participants, such as fear and anger, are more often magnified towards the bereaved women compared to the bereaved men described in the study. As perceived levels of complicated grief are found to be materially higher for women, these negative emotions further compound the intensity of grief that women already experience. When coupling these results with the written text responses received by bereaved women in the qualitative data set from a different research paper, *Experiences of Grief: A Phenomenological Survey, 2020*, the compounding effect of prolonged grief for bereaved women sparks a need for mass education regarding the debilitating struggles women experience from intensified grief."
+abstract: "The quantitative data set from the original research paper *Public stigma towards grief: Does diagnostic labeling matter?*, gathered from Zenodo's open repository, was analyzed to determine whether there are gender biases evident in public stigma towards bereaved individuals with prolonged grief--particularly women. The analysis indicates that certain negative emotions exhibited by the survey participants, such as fear and anger, are more often magnified towards the bereaved women compared to the bereaved men described in the study. As perceived levels of complicated grief are found to be materially higher for women, these negative emotions further compound the intensity of grief that women already experience. When coupling these results with the written text responses received by bereaved women in the qualitative data set from a different research paper, *Experiences of Grief: A Phenomenological Survey, 2020*, the compounding effect of prolonged grief for bereaved women sparks a need for mass education regarding the debilitating struggles women experience from intensified grief."
 format: pdf
 toc: true
 number-sections: true
@@ -36,7 +36,7 @@ library(arrow)
 
 # Introduction {#sec-intro}
 
-This paper takes a deeper dive into the data set provided by the original study named *Public stigma towards grief: Does diagnostic labeling matter?*, which looked to determine whether there was magnified public stigma towards bereaved individuals experiencing prolonged grief symptoms compared to individuals who did not exhibit such symptoms. A study was conducted whereby 852 participants "were randomly assigned to read online one of eight vignettes describing either a bereaved male or female, with PGD symptoms and PGD diagnosis; PGD symptoms and MDE diagnosis; PGD symptoms and no diagnosis, or no PGD symptoms and no diagnosis (i.e., integrated grief)". The original study found that there is, indeed, a higher level of public stigma towards individuals that exhibited symptoms of prolonged grief, and "that the experience of severe grief reactions, ..., causes public stigma".
+This paper takes a deeper dive into the data set provided by the original study named *Public stigma towards grief: Does diagnostic labeling matter?*, which looked to determine whether there was magnified public stigma towards bereaved individuals experiencing prolonged grief symptoms compared to individuals who did not exhibit such symptoms. A study was conducted whereby 852 participants "were randomly assigned to read online one of eight vignettes describing either a bereaved male or female, with prolonged grief disorder (PDG) symptoms and PGD diagnosis; PGD symptoms and major depressive episode (MDE) diagnosis; PGD symptoms and no diagnosis, or no PGD symptoms and no diagnosis (i.e., integrated grief)". The original study found that there is, indeed, a higher level of public stigma towards individuals that exhibited symptoms of prolonged grief, and "that the experience of severe grief reactionS [...] causes public stigma".
 
 In this analysis, I aim to determine whether there is a gender bias through the differences in mean ratings of the various behavioural reactions of participants towards the bereaved individuals described in the eight vignettes. Using a correlation matrix, I identify which pairs of variables representing the emotions towards the bereaved are highly correlated, in order to create a linear regression model between those variables. In addition, I analyze a qualitative study conducted on the experiences of grieving individuals as a secondary data set to determine what the main struggles of bereaved individuals are, and how public stigma can compound the strenuous weight of grief experienced by the bereaved.
 
@@ -52,7 +52,7 @@ As an aside; ChatGPT 3.5 was used to assist in generating the tables and graphs 
 
 ## Public Perception of Individuals Experiencing Grief, By Sex {#sec-data2}
 
-In Table \ref{tab:tab1}, I have compiled a table summarizing the perceptions of the 852 participants on the 8 grieving individuals described in the vignettes of the primary data set. The values for each variable under a given column, such as the column relating to the bereaved man exhibiting prolonged grief symptoms and being diagnosed with prolonged grief disorder, are calculated by averaging the ratings of the participants perceptions toward the bereaved, for all participants that read through the vignette of the given bereaved individual. Note that for the remainder of this paper, prolonged grief disorder and major depressive episode are denoted by `PGD` and `MDE`, respectively, and `None` describes the scenario where there are either no perceived symptoms or diagnosis. The four categories identified in this summary include the following combinations each for one male and one female individual: those exhibiting symptoms of PGD and diagnosed with PGD, those exhibiting symptoms of PGD and diagnosed with MDE, those exhibiting symptoms of PGD and receiving no diagnosis, and those exhibiting no symptoms of PGD and thus receiving no diagnosis.
+In Table \ref{tab:tab1}, I have compiled a table summarizing the perceptions of the 852 participants on the eight grieving individuals described in the vignettes of the primary data set. The values for each variable under a given column, such as the column relating to the bereaved man exhibiting prolonged grief symptoms and being diagnosed with prolonged grief disorder, are calculated by averaging the ratings of the participants perceptions toward the bereaved, for all participants that read through the vignette of the given bereaved individual. Note that for the remainder of this paper, prolonged grief disorder and major depressive episode are denoted by `PGD` and `MDE`, respectively, and `None` describes the scenario where there are either no perceived symptoms or diagnosis. The four categories identified in this summary include the following combinations each for one male and one female individual: those exhibiting symptoms of PGD and diagnosed with PGD, those exhibiting symptoms of PGD and diagnosed with MDE, those exhibiting symptoms of PGD and receiving no diagnosis, and those exhibiting no symptoms of PGD and thus receiving no diagnosis.
 
 For the 11 variables described in each of the four categories, the first two variables describe the number of participants and average age of the participants. The third variable describes the level of complicated grief experienced by the participants. The last eight variables listed denote the average ratings of the participants towards the grieving individuals for each respective variable, in which a higher average implies a stronger relationship to that variable.
 
@@ -345,7 +345,7 @@ summary_table <- rbind(summary_table,
 #| include: true
 #| echo: false
 
-kable(summary_table, caption = "Summary of Gender, Age, and Relation of Person Being Grieved for the Bereaved", align = "c", 
+kable(summary_table, caption = "Summary of Gender, Age, and Relation of Person Being Grieved for the Bereaved Individuals", align = "c", 
       booktabs = TRUE) %>%
   kable_styling(latex_options = "HOLD_position")
 
@@ -355,7 +355,7 @@ As evident in the above table, the vast majority of survey respondents identifie
 
 # Results {#sec-results}
 
-In this section I compare the perception of survey participants, particularly through the ratings of `Complicated Grief`, `Fear`, `Anger`, and `Social Aversion`, towards the 8 bereaved individuals representing the four different combinations of prolonged grief symptoms and diagnoses, for both male and female.
+In this section I compare the perception of survey participants, particularly through the ratings of `Complicated Grief`, `Fear`, `Anger`, and `Social Aversion`, towards the eight bereaved individuals representing the four different combinations of prolonged grief symptoms and diagnoses, for both male and female.
 
 ## Gender Skew of Complicated Grief and Behavioural Tendencies Towards the Bereaved {#sec-results2}
 
@@ -366,7 +366,7 @@ In this section I compare the perception of survey participants, particularly th
 icg_data <- cleaned_grief_data %>%
   filter(Variable %in% c("Complicated Grief Rating", "Fear", "Anger", "Social Aversion"))
 
-kable(icg_data, caption = "Complicated Grief and Participants' Behavior Ratings Towards the Bereaved", row.names = FALSE, booktabs = TRUE) %>%
+kable(icg_data, caption = "Complicated Grief and Participants' Behavior Ratings Towards the Bereaved Individuals", row.names = FALSE, booktabs = TRUE) %>%
   kable_styling(latex_options = "HOLD_position")
 
 ```
@@ -375,13 +375,13 @@ The first observation one can immediately make from the table is that participan
 
 Complicated grief is typically described as a higher than normal intensity of pain and sorrow that one experiences in grief, which can remain for longer periods of time when the grief is harder to overcome. Thus, these ratings imply that the participants found the grief of the three symptomatic bereaved women to be more intense than that of the three comparable symptomatic bereaved men.
 
-As for the `Fear` that participants felt towards the bereaved, the ratings were fairly similar across each category, with generally only small differences. However, for the two individuals exhibiting prolonged grief symptoms with a Major Depressive Episode (MDE) diagnosis, participants felt roughly 13% more fearful towards the woman than the man.
+As for the `Fear` that participants felt towards the bereaved, the ratings were fairly similar across each category, with generally only small differences. However, for the two individuals exhibiting prolonged grief symptoms with an MDE diagnosis, participants felt roughly 13% more fearful towards the woman than the man.
 
 The `Anger` felt by participants towards the bereaved individuals was fairly close in rating for both male and female across all four categories, however it is important to note that participants felt more anger towards the woman than the man for each category.
 
 Finally, after analyzing the ratings of `Social Aversion`, participants prefer to socially distance themselves more from men than women for all four categories. What this means is that the participants, being members of society, are more likely to interact socially with bereaved women than bereaved men, regardless of the intensity of the symptoms exhibited by the bereaved.
 
-## Pairwise Correlations of Emotions Towards, and Tendencies of, the Bereaved {#sec-results3}
+## Pairwise Correlations of Participants' Emotions Towards, and Tendencies of, the Bereaved {#sec-results3}
 
 To further analyze any links between behavioural tendencies and public stigma of participants towards the eight bereaved individuals, a pairwise correlation matrix is created using the eight values of each of the four variables in Table \ref{tab:tab6}.
 
@@ -419,14 +419,14 @@ kable(correlation_df,
 
 ```
 
-The 4x4 matrix is symmetric about the diagonal, and all four diagonal values are equal to 1 since the correlation of any variable with itself is 1. Looking at the correlation coefficients under the `CGR` column, complicated grief has a weak relationship to `Fear`, `Anger`, and `Social Aversion`. This is likely to be the case as complicated grief doesn't necessarily evoke any emotions from the public towards a bereaved individual with higher or lower levels of complicated grief. As for `Social Aversion`, the variable has a strong relationship to `Fear` and `Anger`, which makes sense intuitively since a strong feeling of fear or anger towards an individual would likely make you more likely to socially distance yourself from that individual. Finally, fear and anger have a strong relationship, which again agrees with the idea that the two emotions are both fairly strong negative emotions towards someone.
+The 4x4 matrix is symmetric about the diagonal, and all four diagonal values are equal to 1 since the correlation of any variable with itself is 1. Looking at the correlation coefficients under the `CGR` (complicated grief rating) column, complicated grief has a weak relationship to `Fear`, `Anger`, and `Social Aversion`. This is likely to be the case as complicated grief doesn't necessarily evoke any emotions from the public towards a bereaved individual with higher or lower levels of complicated grief. As for `Social Aversion`, the variable has a strong relationship to `Fear` and `Anger`, which makes sense intuitively since a strong feeling of fear or anger towards an individual would likely make an individual more likely to socially distance themselves from that individual. Finally, fear and anger have a strong relationship, which again agrees with the idea that the two emotions are both fairly strong negative emotions towards someone.
 
 ## Gender-Based Public Stigma Towards the Bereaved, by Grief Category {#sec-results4}
 
 In @sec-results2 and @sec-results3, the data was analyzed by grouping each of the four behavioural variables and looking at the differences in ratings across categories.
 In this subsection, the data will be analyzed by grouping each symptom-diagnosis category, and identifying if there are structural differences in public stigma through the ratings of the four aforementioned variables, towards bereaved individuals based on their diagnosis.
 
-Firstly, we look at the stigma towards individuals who have been diagnosed with Prolonged Grief Disorder (PGD), grouped by gender.
+Firstly, we look at the stigma towards individuals who have been diagnosed with PGD, grouped by gender.
 
 ```{r graph1, fig.cap='A bar graph is used to display the comparable ratings for CGR, Fear, Anger, and Social Aversion, for the two bereaved individuals diagnosed with PGD.', echo=FALSE}
 
@@ -448,7 +448,7 @@ ggplot(my_data_long1, aes(x = Variable, y = Value, fill = Gender)) +
 
 For the individuals with PGD diagnoses, `Anger` and `Complicated Grief` ratings are higher for women, whereas `Fear` and `Social Aversion` ratings are higher for men.
 
-Next, we look at the stigma towards individuals who have been diagnosed with Major Depressive Episode (MDE), grouped by gender.
+Next, we look at the stigma towards individuals who have been diagnosed with MDE, grouped by gender.
 
 ```{r graph2, fig.cap='A bar graph is used to display the comparable ratings for CGR, Fear, Anger, and Social Aversion, for the two bereaved individuals diagnosed with MDE.', echo=FALSE}
 
@@ -496,7 +496,7 @@ Therefore, for bereaved individuals experiencing prolonged grief symptoms, there
 
 # Model {#sec-model}
 
-In @sec-results3, we found that the pairwise correlation between `Anger` and `Social Aversion` was 0.91, which is fairly close to the perfect correlation coefficient of 1.00. To further analyze the relationship between these variables, a statistical model using linear regression is created in which the two variables, `Anger` and `Social Aversion`, are regressed on one another by implementing the least squares method. The least squares method creates a line of best fit given a set of data points, by minimizing the sum of the squared differences between the actual points and the points on the line of best fit. The general form of a linear regression model is written as the following:
+In @sec-results3, we found that the pairwise correlation between `Anger` and `Social Aversion` was 0.91, which is fairly close to the perfectly positive correlation coefficient of 1.00. To further analyze the relationship between these variables, a statistical model using linear regression is created in which the two variables, `Anger` and `Social Aversion`, are regressed on one another by implementing the least squares method. The least squares method creates a line of best fit given a set of data points, by minimizing the sum of the squared differences between the actual points and the points on the line of best fit. The general form of a linear regression model is written as the following:
 
 $$ y = \alpha x + \beta + \epsilon $$
 

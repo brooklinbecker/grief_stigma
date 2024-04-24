@@ -1,44 +1,65 @@
 #### Preamble ####
-# Purpose: Cleans the raw plane data recorded by two observers..... [...UPDATE THIS...]
-# Author: Rohan Alexander [...UPDATE THIS...]
-# Date: 6 April 2023 [...UPDATE THIS...]
-# Contact: rohan.alexander@utoronto.ca [...UPDATE THIS...]
+# Purpose: Cleans the raw data of the primary quantitative data set
+# Author: Brooklin Becker
+# Date: 24 April 2024
+# Contact: brooklin.becker@mail.utoronto.ca
 # License: MIT
-# Pre-requisites: [...UPDATE THIS...]
-# Any other information needed? [...UPDATE THIS...]
+# Pre-requisites: need to have run 01-download_data.R
 
 #### Workspace setup ####
 library(tidyverse)
+library(knitr)
+library(kableExtra)
+library(janitor)
+library(openxlsx)
+library(reshape2)
+library(tidyr)
+library(arrow)
 
-#### Clean data ####
-raw_data <- read_csv("inputs/data/plane_data.csv")
+#### Load Data ####
+#Reading the primary quantitative data file from the source website
+raw_grief_data <-
+  read.xlsx("inputs/data/new_quant_grief_data.xlsx", sheet = 1)
 
-cleaned_data <-
-  raw_data |>
-  janitor::clean_names() |>
-  select(wing_width_mm, wing_length_mm, flying_time_sec_first_timer) |>
-  filter(wing_width_mm != "caw") |>
-  mutate(
-    flying_time_sec_first_timer = if_else(flying_time_sec_first_timer == "1,35",
-                                   "1.35",
-                                   flying_time_sec_first_timer)
-  ) |>
-  mutate(wing_width_mm = if_else(wing_width_mm == "490",
-                                 "49",
-                                 wing_width_mm)) |>
-  mutate(wing_width_mm = if_else(wing_width_mm == "6",
-                                 "60",
-                                 wing_width_mm)) |>
-  mutate(
-    wing_width_mm = as.numeric(wing_width_mm),
-    wing_length_mm = as.numeric(wing_length_mm),
-    flying_time_sec_first_timer = as.numeric(flying_time_sec_first_timer)
-  ) |>
-  rename(flying_time = flying_time_sec_first_timer,
-         width = wing_width_mm,
-         length = wing_length_mm
-         ) |> 
-  tidyr::drop_na()
+#### Clean primary quantitative data ####
 
-#### Save data ####
-write_csv(cleaned_data, "outputs/data/analysis_data.csv")
+#Creating new dataframe for cleaning
+cleaned_grief_data <- raw_grief_data
+
+#Selecting only certain rows under the variable column
+selected_variables <- c("patricipants_number", "age_mean", "icg_mean", 
+                        "competent_mean", "warm_mean", "dependent_mean", 
+                        "emotionally_stable_mean", "fear_mean", "anger_mean", 
+                        "prosocial_mean", "social_distance_mean")
+
+cleaned_grief_data <- cleaned_grief_data[cleaned_grief_data$variable %in% selected_variables, ]
+
+#New variable names
+new_var_names <- c("Participants", "Mean Age", "Complicated Grief Rating", "Competency", 
+                   "Warmness", "Dependency", "Emotional Stability", "Fear", "Anger", 
+                   "Prosociality", "Social Aversion")
+
+old_var_names <- selected_variables
+
+# Change the name of the variables in the dataframe
+cleaned_grief_data <- cleaned_grief_data %>%
+  mutate(variable = ifelse(variable %in% old_var_names, new_var_names, variable))
+
+#Renaming the columns to shorten column names
+cleaned_grief_data <-
+  cleaned_grief_data |>
+  rename(
+    Variable = variable,
+    "P-P-M" = s_pgd_d_pgd_m,
+    "P-P-F" = s_pgd_d_pgd_f,
+    "P-M-M" = s_pgd_d_mde_m,
+    "P-M-F" = s_pgd_d_mde_f,
+    "P-0-M" = s_pgd_d_000_m,
+    "P-0-F" = s_pgd_d_000_f,
+    "0-0-M" = s_000_d_000_m,
+    "0-0-F" = s_000_d_000_f
+  )
+
+#Writing parquet file for cleaned data
+write_parquet(cleaned_grief_data, "cleaned_grief_data.parquet")
+
