@@ -8,7 +8,7 @@ The quantitative data set from the original research paper *Public stigma toward
 
 The repo is structured as:
 
--   `data/raw_data` contains the raw data as obtained from two sources.
+-   `data/raw_data` contains the raw data as obtained from the two individual sources.
 -   `data/analysis_data` contains the cleaned dataset that was constructed for the primary data file.
 -   `model` contains the linear regression model. 
 -   `other` contains relevant literature, details about LLM chat interactions, and sketches.
