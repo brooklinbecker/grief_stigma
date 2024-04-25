@@ -82,6 +82,7 @@ cleaned_grief_data <- raw_grief_data
 ```{r}
 #| include: false
 
+#Selecting certain columns for cleaned file
 selected_variables <- c("patricipants_number", "age_mean", "icg_mean", "competent_mean", "warm_mean", "dependent_mean", "emotionally_stable_mean", "fear_mean", "anger_mean", "prosocial_mean", "social_distance_mean")
 
 cleaned_grief_data <- cleaned_grief_data[cleaned_grief_data$variable %in% selected_variables, ]
@@ -103,7 +104,7 @@ old_var_names <- selected_variables
 ```{r}
 #| include: false
 
-# Change the name of the variables in the dataframe
+# Changing the name of the variables in the dataframe
 cleaned_grief_data <- cleaned_grief_data %>%
   mutate(variable = ifelse(variable %in% old_var_names, new_var_names, variable))
 
@@ -144,6 +145,7 @@ cleaned_grief_data[, numeric_cols] <- lapply(cleaned_grief_data[, numeric_cols],
 ```{r}
 #| include: false
 
+#Writing cleaned primary data file into parquet file
 write_parquet(cleaned_grief_data, "cleaned_quant_grief_data.parquet")
 
 ```
@@ -152,6 +154,7 @@ write_parquet(cleaned_grief_data, "cleaned_quant_grief_data.parquet")
 #| include: true
 #| echo: false
 
+#Creating the table with kable
 kable(cleaned_grief_data, caption = "Public Perception Towards Grief Based on Varying Symptoms and Diagnoses, By Sex", row.names = FALSE, booktabs = TRUE) %>%
   kable_styling(latex_options = "HOLD_position")
 
@@ -163,7 +166,7 @@ Below is a legend denoting the combinations of grief symptoms and diagnoses, as 
 #| include: true
 #| echo: false
 
-# Create a dataframe for the legend
+# Creating a dataframe for the legend
 legend_df <- data.frame(
   "Column Name" = c("P-P-M", "P-P-F", "P-M-M", "P-M-F", "P-0-M", "P-0-F", "0-0-M", "0-0-F"),
   "Symptoms" = c("PGD", "PGD", "PGD", "PGD", "PGD", "PGD", "None", "None"),
@@ -171,7 +174,7 @@ legend_df <- data.frame(
   "Gender" = c("Male", "Female", "Male", "Female", "Male", "Female", "Male", "Female")
 )
 
-# Print the table
+# Creating the table with kable
 kable(legend_df, 
       col.names = c("Column Name", "Symptoms", "Diagnosis", "Gender"),
       caption = "Legend for Columns", booktabs = TRUE) %>%
@@ -193,7 +196,7 @@ aggregate_grief_data <- cleaned_grief_data
 ```{r}
 #| include: false
 
-# Convert columns to numeric if needed
+# Converting columns to numeric if needed
 aggregate_grief_data[, 2:9] <- lapply(aggregate_grief_data[, 2:9], as.numeric)
 
 # Calculating the row-wise means for each category's pair of columns
@@ -211,7 +214,7 @@ aggregate_grief_data <- aggregate_grief_data[, -c(2:9)]
 #| include: true
 #| echo: false
 
-# Display the table using kable
+# Creating the table with kable
 kable(aggregate_grief_data, caption = "Public Perception Towards Grief Based on Varying Symptoms and Diagnoses, Aggregated", row.names = FALSE, booktabs = TRUE) %>%
   kable_styling(latex_options = "HOLD_position")
 
@@ -225,7 +228,7 @@ Similar to @sec-data2, below is a legend denoting the combinations of grief symp
 #| include: true
 #| echo: false
 
-# Create a dataframe for the legend
+# Creating a dataframe for the legend
 legend_df <- data.frame(
   "Column Name" = c("PGD and PGD", "PGD and MDE", "PGD and None", "None and None"),
   "Symptoms" = c("PGD", "PGD", "PGD", "None"),
@@ -233,7 +236,7 @@ legend_df <- data.frame(
   "Gender" = c("Male and Female", "Male and Female", "Male and Female", "Male and Female")
 )
 
-# Print the table
+# Creating the table with kable
 kable(legend_df, 
       col.names = c("Column Name", "Symptoms", "Diagnosis", "Gender"),
       caption = "Legend for Columns", booktabs = TRUE) %>%
@@ -271,6 +274,7 @@ cleaned_grief_data2 <- raw_grief_data2
 ```{r}
 #| include: false
 
+#Selecting certain columns for new dataframe
 selected_columns2 <- c("Respondent.Number", "Respondent's.Age", "Respondent's.Gender.-.Selected.Choice", "Person.who.died")
 
 cleaned_grief_data2 <- cleaned_grief_data2[, selected_columns2]
@@ -287,10 +291,10 @@ colnames(cleaned_grief_data2) <- c("Respondent", "Age", "Gender", "Person Being 
 ```{r}
 #| include: false
 
-# Extract the lower bound of each age range from the "Age" column strings
+# Extracting the lower bound of each age range from the "Age" column strings
 cleaned_grief_data2$Age <- gsub(" years.*", "", gsub("^.*?-([0-9]+).*", "\\1", cleaned_grief_data2$Age))
 
-# Convert the values to numeric
+# Converting the values to numeric
 cleaned_grief_data2$Age <- as.numeric(cleaned_grief_data2$Age)
 
 ```
@@ -298,14 +302,14 @@ cleaned_grief_data2$Age <- as.numeric(cleaned_grief_data2$Age)
 ```{r}
 #| include: false
 
-# Count the instances of "Male" and "Female"
+# Counting the instances of "Male" and "Female"
 male_count <- sum(cleaned_grief_data2$Gender == "Male")
 female_count <- sum(cleaned_grief_data2$Gender == "Female")
 
-# Define the age ranges
+# Defining the age ranges
 age_ranges <- c("Age 18-24", "Age 25-34", "Age 35-44", "Age 45-54", "Age 55-64", "Age 65-74", "Age 75+")
 
-# Initialize an empty dataframe to store the summary
+# Initializing an empty dataframe to store the summary
 summary_table <- data.frame(
   Metric = c("Male", "Female", age_ranges),
   Number = numeric(length(age_ranges) + 2)
@@ -314,19 +318,19 @@ summary_table <- data.frame(
 summary_table$Number[1] <- male_count
 summary_table$Number[2] <- female_count
 
-# Define the lower bounds for each age range
+# Defining the lower bounds for each age range
 age_lower_bounds <- c(18, 25, 35, 45, 55, 65, 75)
 
-# Loop through each row in the selected_columns dataframe
+# Looping through each row in the selected_columns dataframe
 for (i in 1:nrow(cleaned_grief_data2)) {
   age <- cleaned_grief_data2$Age[i]
   
-  # Determine the age range of the current individual
+  # Determining the age range of the current individual
   for (j in 1:length(age_ranges)) {
     lower_bound <- age_lower_bounds[j]
     upper_bound <- ifelse(j == length(age_ranges), Inf, age_lower_bounds[j + 1] - 1)
     
-    # Increment the count if the age falls within the current range
+    # Incrementing the count if the age falls within the current range
     if (age >= lower_bound && age <= upper_bound) {
       summary_table$Number[j + 2] <- summary_table$Number[j + 2] + 1
       break
@@ -345,6 +349,7 @@ summary_table <- rbind(summary_table,
 #| include: true
 #| echo: false
 
+#Creating the table with kable
 kable(summary_table, caption = "Summary of Gender, Age, and Relation of Person Being Grieved for the Bereaved Individuals", align = "c", 
       booktabs = TRUE) %>%
   kable_styling(latex_options = "HOLD_position")
@@ -363,9 +368,11 @@ In this section I compare the perception of survey participants, particularly th
 #| include: true
 #| echo: false
 
+#Creating new complicated grief dataframe for the 4 variables
 icg_data <- cleaned_grief_data %>%
   filter(Variable %in% c("Complicated Grief Rating", "Fear", "Anger", "Social Aversion"))
 
+#Creating the table with kable
 kable(icg_data, caption = "Complicated Grief and Participants' Behavior Ratings Towards the Bereaved Individuals", row.names = FALSE, booktabs = TRUE) %>%
   kable_styling(latex_options = "HOLD_position")
 
@@ -389,30 +396,30 @@ To further analyze any links between behavioural tendencies and public stigma of
 #| include: true
 #| echo: false
 
-# Convert all columns to numeric
+# Converting all columns to numeric
 icg_data_numeric <- icg_data
 icg_data_numeric[, -1] <- sapply(icg_data_numeric[, -1], as.numeric)
 
-# Remove rows with any missing values
+# Removing rows with any missing values
 icg_data_numeric <- na.omit(icg_data_numeric)
 
-# Transpose the data set
+# Transposing the data set
 icg_data_transposed <- as.data.frame(t(icg_data_numeric[, -1]))
 
-# Create a 4x4 matrix for pairwise correlations
+# Creating a 4x4 matrix for pairwise correlations
 correlation_matrix <- cor(icg_data_transposed)
 
-# Convert the correlation matrix to a dataframe
+# Converting the correlation matrix to a dataframe
 correlation_df <- as.data.frame(correlation_matrix)
 
-# Add row names and column names
+# Adding row names and column names
 rownames(correlation_df) <- c("CGR", "Fear", "Anger", "Social Aversion")
 colnames(correlation_df) <- c("CGR", "Fear", "Anger", "Social Aversion")
 
-# Round the correlation values to 2 decimal points
+# Rounding the correlation values to 2 decimal points
 correlation_df <- round(correlation_df, 2)
 
-# Print the table
+# Creating the table with kable
 kable(correlation_df, 
       caption = "Pairwise Correlation Matrix between Variables", booktabs = TRUE) %>%
   kable_styling(latex_options = "HOLD_position")
@@ -432,7 +439,7 @@ Firstly, we look at the stigma towards individuals who have been diagnosed with 
 
 my_data_long1 <- tidyr::gather(icg_data, Gender, Value, "P-P-M", "P-P-F")
 
-# Plot bar graph
+# Plotting bar graph
 ggplot(my_data_long1, aes(x = Variable, y = Value, fill = Gender)) +
   geom_bar(stat = "identity", position = "dodge") +
   labs(title = "Public Stigma Towards Bereaved Individuals Diagnosed with\nProlonged Grief Disorder, by Gender",
@@ -454,7 +461,7 @@ Next, we look at the stigma towards individuals who have been diagnosed with MDE
 
 my_data_long2 <- tidyr::gather(icg_data, Gender, Value, "P-M-M", "P-M-F")
 
-# Plot bar graph
+# Plotting bar graph
 ggplot(my_data_long2, aes(x = Variable, y = Value, fill = Gender)) +
   geom_bar(stat = "identity", position = "dodge") +
   labs(title = "Public Stigma Towards Bereaved Individuals Diagnosed with\nProlonged Grief Disorder, by Gender",
@@ -476,7 +483,7 @@ Finally, we look at the stigma towards individuals who have not been diagnosed b
 
 my_data_long3 <- tidyr::gather(icg_data, Gender, Value, "P-0-M", "P-0-F")
 
-# Plot bar graph
+# Plotting bar graph
 ggplot(my_data_long3, aes(x = Variable, y = Value, fill = Gender)) +
   geom_bar(stat = "identity", position = "dodge") +
   labs(title = "Public Stigma Towards Bereaved Individuals Diagnosed with\nProlonged Grief Disorder, by Gender",
@@ -512,24 +519,24 @@ The eight pairs of values for the two aforementioned variables are plotted in th
 
 ```{r graph4, fig.cap='A scatter plot graph is used to display the eight pairs of values for the Anger and Social Aversion variables, along with the line of best fit.', echo=FALSE, warning=FALSE, message=FALSE}
 
-# Define the data for Anger and Social Aversion
+# Defining the data for Anger and Social Aversion
 anger_social_aversion <- data.frame(
   Anger = c(1.31, 1.37, 1.30, 1.34, 1.32, 1.40, 1.20, 1.22),
   Social_Aversion = c(15.25, 14.21, 14.62, 14.10, 14.58, 14.15, 10.93, 9.68)
 )
 
-# Perform linear regression
+# Performing linear regression
 lm_model <- lm(Social_Aversion ~ Anger, data = anger_social_aversion)
 
-# Plot the data points
+# Plotting the data points
 ggplot(data = anger_social_aversion, aes(x = Anger, y = Social_Aversion)) +
   geom_point() +
   labs(title = "Linear Relationship Between Anger and Social Aversion",
        x = "Anger",
        y = "Social Aversion") +
-  # Add the line of best fit
+  # Adding the line of best fit
   geom_smooth(method = "lm", se = FALSE, color = "red") +
-  # Add the equation for the line of best fit
+  # Adding the equation for the line of best fit
   geom_text(aes(x = max(anger_social_aversion$Anger), y = max(anger_social_aversion$Social_Aversion),
                 label = paste("y =", round(lm_model$coefficients[2], 2), "x", round(lm_model$coefficients[1], 2))),
             color = "black", vjust = 1.5, hjust = 1)
@@ -545,10 +552,10 @@ Shown below is the resulting summary table of the linear model.
 # Summary of the model
 model_summary <- summary(lm_model)
 
-# Convert summary to data frame
+# Converting summary to data frame
 summary_df <- as.data.frame(model_summary$coefficients)
 
-# Render the summary table using kable
+# Rendering the summary table using kable
 knitr::kable(summary_df, caption = "Summary of Linear Model",
              align = "c", booktabs = TRUE) %>%
   kable_styling(latex_options = "HOLD_position")
